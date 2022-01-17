@@ -25,7 +25,7 @@ impl Opt {
         ))]
         let app = app.arg(arg!(-j --jack "Use the JACK host"));
         let matches = app.get_matches();
-        let device = matches.value_of("DEVICE").unwrap_or("default").to_string();
+        let device = "front:CARD=Generic,DEV=0".to_owned();
 
         #[cfg(all(
             any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd"),

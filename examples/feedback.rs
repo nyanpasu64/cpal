@@ -49,8 +49,8 @@ impl Opt {
             .unwrap_or("150")
             .parse()
             .context("parsing latency option")?;
-        let input_device = matches.value_of("IN").unwrap_or("default").to_string();
-        let output_device = matches.value_of("OUT").unwrap_or("default").to_string();
+        let input_device = "front:CARD=Generic,DEV=0".to_owned();
+        let output_device = "front:CARD=Generic,DEV=0".to_owned();
 
         #[cfg(all(
             any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd"),
