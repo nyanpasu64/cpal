@@ -120,14 +120,14 @@ fn main() -> anyhow::Result<()> {
     let host = cpal::default_host();
 
     {
-        print!("All devices: ");
+        print!("All devices:\n");
         print_drain(host.devices()?);
 
         let everything: Vec<Device> = host.devices()?.collect();
-        print!("All devices openable together: ");
+        print!("All devices openable together:\n");
         print_all(&everything);
 
-        print!("All devices openable twice: ");
+        print!("All devices openable twice:\n");
         let everything: Vec<Device> = host.devices()?.collect();
         print_all(&everything);
     }
@@ -143,14 +143,14 @@ fn main() -> anyhow::Result<()> {
     .expect("failed to find input device");
 
     {
-        print!("All devices: ");
+        print!("All devices:\n");
         print_drain(host.devices()?);
 
         let everything: Vec<Device> = host.devices()?.collect();
-        print!("All devices openable together: ");
+        print!("All devices openable together:\n");
         print_all(&everything);
 
-        print!("All devices openable twice: ");
+        print!("All devices openable twice:\n");
         let everything: Vec<Device> = host.devices()?.collect();
         print_all(&everything);
     }

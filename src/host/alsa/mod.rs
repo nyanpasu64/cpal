@@ -194,15 +194,23 @@ impl DeviceHandles {
         name: &str,
         stream_type: alsa::Direction,
     ) -> Result<&mut Option<alsa::PCM>, alsa::Error> {
+        println!("try_open({:?}, {:?})", name, stream_type);
         let handle = match stream_type {
             alsa::Direction::Playback => &mut self.playback,
             alsa::Direction::Capture => &mut self.capture,
         };
 
         if handle.is_none() {
-            *handle = Some(alsa::pcm::PCM::new(name, stream_type, true)?);
+            *handle = Some(match alsa::pcm::PCM::new(name, stream_type, true) {
+                Ok(v) => v,
+                Err(e) => {
+                    println!("    {:?}", e);
+                    return Err(e);
+                }
+            });
         }
 
+        println!("    Ok");
         Ok(handle)
     }
 
