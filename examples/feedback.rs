@@ -14,6 +14,7 @@ extern crate ringbuf;
 use anyhow::Context;
 use clap::arg;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
+use cpal::Device;
 use ringbuf::RingBuffer;
 
 #[derive(Debug)]
@@ -74,6 +75,23 @@ impl Opt {
     }
 }
 
+fn print_drain<T: Iterator<Item = Device>>(data: T) {
+    println!(
+        "{:#?}",
+        data.map(|d| d.name().unwrap_or_default())
+            .collect::<Vec<_>>()
+    )
+}
+
+fn print_all(data: &[Device]) {
+    println!(
+        "{:#?}",
+        data.iter()
+            .map(|d| d.name().unwrap_or_default())
+            .collect::<Vec<_>>()
+    )
+}
+
 fn main() -> anyhow::Result<()> {
     let opt = Opt::from_args()?;
 
@@ -101,7 +119,21 @@ fn main() -> anyhow::Result<()> {
     ))]
     let host = cpal::default_host();
 
+    {
+        print!("All devices: ");
+        print_drain(host.devices()?);
+
+        let everything: Vec<Device> = host.devices()?.collect();
+        print!("All devices openable together: ");
+        print_all(&everything);
+
+        print!("All devices openable twice: ");
+        let everything: Vec<Device> = host.devices()?.collect();
+        print_all(&everything);
+    }
+
     // Find devices.
+    println!("Opening input device for duplex...");
     let input_device = if opt.input_device == "default" {
         host.default_input_device()
     } else {
@@ -109,6 +141,19 @@ fn main() -> anyhow::Result<()> {
             .find(|x| x.name().map(|y| y == opt.input_device).unwrap_or(false))
     }
     .expect("failed to find input device");
+
+    {
+        print!("All devices: ");
+        print_drain(host.devices()?);
+
+        let everything: Vec<Device> = host.devices()?.collect();
+        print!("All devices openable together: ");
+        print_all(&everything);
+
+        print!("All devices openable twice: ");
+        let everything: Vec<Device> = host.devices()?.collect();
+        print_all(&everything);
+    }
 
     let output_device = if opt.output_device == "default" {
         host.default_output_device()
